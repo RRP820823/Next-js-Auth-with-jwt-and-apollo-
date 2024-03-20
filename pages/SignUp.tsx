@@ -1,5 +1,3 @@
-"use client"
-
 import gql from "graphql-tag"
 import { useMutation, useQuery } from "@apollo/client"
 import React, { cache, useState } from "react"
@@ -9,15 +7,27 @@ import { useRouter } from "next/router"
 import Link from "next/link"
 
 // Import the CSS file
-let UserSignIn = gql(`
-mutation UserSignIn($input: UsersPermissionsLoginInput!)
- {login(input: $input) {
+let UserSignUp = gql(`
+# mutation UserSignIn($input: UsersPermissionsLoginInput!)
+#  {
+#   login(input: $input) {
+#   jwt
+#   user {
+#     email
+#     id
+#   }
+# }
+# }
+
+mutation($input: UsersPermissionsRegisterInput!){
+register(input: $input) {
   jwt
   user {
     email
-    id
+    username
   }
-}}
+}
+}
 `)
 
 const userInfoQuery = gql`
@@ -65,9 +75,11 @@ function GetAllUsers() {
     </div>
   )
 }
-function SigninForm() {
+function SignUp() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+
+  const [username, setUsername] = useState("")
   const [userInfo, setUserInfo] = React.useState({})
   let router = useRouter()
   // let { loading, data }: any = useAppInit()
@@ -79,25 +91,24 @@ function SigninForm() {
   })
 
   let { authInfo, isAuthenticated, setAuthInfo }: any = useAuthContext()
-  let [SignInMutation, { error, loading: isloading }] = useMutation(
-    UserSignIn,
+  let [SignUpMutation, { error, loading: isloading }] = useMutation(
+    UserSignUp,
     {
       variables: {
         input: {
-          identifier: email,
+          email: email,
           password: password,
+          username: username,
         },
       },
 
       onCompleted(data) {
-        let { login } = data
-        router.push("/Welcomepage")
+        // router.push("/Welcomepage")
         // console.log("data", data?.login?.jwt)
-        console.log("authInfo", authInfo)
+        Cookies.set("token", data?.register?.jwt)
+        console.log("data", data)
 
-        Cookies.set("token", data?.login?.jwt)
-
-        setUserInfo({ user: login.user, jwt: login.jwt })
+        // setUserInfo({ user: login.user, jwt: login.jwt })
       },
       onError(error) {
         console.log("error", error)
@@ -107,24 +118,25 @@ function SigninForm() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    SignInMutation()
+    SignUpMutation()
 
     // Here you can add code to handle sign-in logic, such as authentication
-    console.log("Submitted:", { email, password })
+    console.log("Submitted:", { email, password, username })
   }
 
   function handelSignout() {
     Cookies.remove("token")
-    console.log("removed cookies")
+
+    console.log("clicked")
   }
   return (
     <div className="signin-form-container">
       <button onClick={handelSignout}>Signout</button>
-      <h2>Sign In Form</h2>
+      <h2>Sign Up Form</h2>
       <p> {JSON.stringify(authInfo)}</p>
       {userInfo && <h1>User :</h1>}
       {isloading && <p>....Signing user</p>}
-      {error && <p>{error?.message}</p>}
+      {error && <p>{error.message}</p>}
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">Email:</label>
         <input
@@ -145,23 +157,41 @@ function SigninForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
+        {/* username */}
+
+        <label htmlFor="password">username:</label>
+        <input
+          autoComplete="true"
+          type="text"
+          id="username"
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+
         <button
           onClick={() => console.log("clickced")}
           type="submit"
-          value="Sign In"
+          value="Sign Up"
         >
-          Sign in
+          Sign Up
         </button>
+
         {/* <button onClick={() => router.push("/SignUp")}>new User</button> */}
       </form>
       <GetAllUsers />
-      new user
-      <Link href={"/SignUp"}>
-        {" "}
-        <b>register</b>
+      <br />
+      <br />
+      Already a user
+      <Link href={"/Login"}>
+        <span>
+          <b>Login</b>
+        </span>
       </Link>
     </div>
   )
 }
 
-export default SigninForm
+export default SignUp

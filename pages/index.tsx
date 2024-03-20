@@ -1,13 +1,11 @@
-// import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client"
-import Users from "@/components/users"
-
-import Layout from "@/components/layout"
-import React from "react"
+import SigninForm from "./Login"
 
 export default function Home() {
   return (
-    <Layout>
-      <Users />
-    </Layout>
+    <div>
+      <h1>SIGN In </h1>
+      <SigninForm />
+      {/* <SignupForm /> */}
+    </div>
   )
 }

@@ -26,7 +26,9 @@ export default function Users() {
   }
   return (
     <div>
-      <ul>
+      hello users
+      {/* id */}
+      {/* <ul>
         {data.tracksForHome.map((u: any) => (
           <Link key={u.id} href={`/${u.id}`}>
             <li key={u.id}>
@@ -35,7 +37,7 @@ export default function Users() {
             </li>
           </Link>
         ))}
-      </ul>
+      </ul> */}
     </div>
   )
 }

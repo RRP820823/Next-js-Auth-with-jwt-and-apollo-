@@ -1,15 +1,32 @@
 import { Resolvers } from "../pages/types"
 
-const fetch = require("node-fetch")
 const resolvers: Resolvers = {
   Query: {
     getUser: async (_, { id }, { dataSources }) => {
-      try {
-        const user = await dataSources.trackAPI.getUserBuID(id)
-        return user
-      } catch (error) {
-        return error
+      let headersList = {
+        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+        Accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzA5MTIxMDMyLCJleHAiOjE3MTE3MTMwMzJ9.9sH3Kuz-mQxDJNOWlDEtOlN1e5jY4T9VKpcDBpsilA0",
       }
+
+      let response = await fetch(
+        `https://strapi.training.brainvire.net/api/basic-details?populate=*&filters[users_permissions_user][id][$eq]=${id}`,
+        {
+          method: "GET",
+          headers: headersList,
+        }
+      )
+
+      let data = await response.json()
+      console.log(data)
+
+      // try {
+      //   const res = dataSources.TrackAPI.getUserById(id)
+      //   return res.json()
+      // } catch (error) {
+      //   return error
+      // }
     },
 
     // // returns an array of Tracks that will be used to populate the homepage grid of our web client
@@ -29,25 +46,17 @@ const resolvers: Resolvers = {
   },
 
   Mutation: {
-    // increments a track's numberOfViews property
-    // incrementTrackViews: async (_, { id }, { dataSources }) => {
-    //   try {
-    //     const track = await dataSources.trackAPI.incrementTrackViews(id)
-    //     return {
-    //       code: 200,
-    //       success: true,
-    //       message: `Successfully incremented number of views for track ${id}`,
-    //       track,
-    //     }
-    //   } catch (err) {
-    //     return {
-    //       code: err.extensions.response.status,
-    //       success: false,
-    //       message: err.extensions.response.body,
-    //       track: null,
-    //     }
-    //   }
-    // },
+    SignUp: (_, { Crediantials }) => {
+      let { email, password, username }: any = Crediantials
+      return {
+        jwt: "salma hayak",
+        user: {
+          email,
+          password,
+          username,
+        },
+      }
+    },
   },
   Track: {
     author: ({ authorId }, _, { dataSources }) => {

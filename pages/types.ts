@@ -29,25 +29,6 @@ export type Author = {
   photo?: Maybe<Scalars['String']['output']>;
 };
 
-export type Employee = {
-  __typename?: 'Employee';
-  attributes: EmployeeAttributes;
-  id?: Maybe<Scalars['ID']['output']>;
-};
-
-export type EmployeeAttributes = {
-  __typename?: 'EmployeeAttributes';
-  aadharNo: Scalars['String']['output'];
-  createdAt: Scalars['String']['output'];
-  dateOfJoining: Scalars['String']['output'];
-  department: Scalars['String']['output'];
-  employeeId?: Maybe<Scalars['String']['output']>;
-  phoneNo: Scalars['String']['output'];
-  publishedAt: Scalars['String']['output'];
-  updatedAt: Scalars['String']['output'];
-  user?: Maybe<User>;
-};
-
 export type IncrementTrackViewsResponse = {
   __typename?: 'IncrementTrackViewsResponse';
   /** Similar to HTTP status code, represents the status of the mutation */
@@ -58,6 +39,12 @@ export type IncrementTrackViewsResponse = {
   success: Scalars['Boolean']['output'];
   /** Newly updated track after a successful mutation */
   track?: Maybe<Track>;
+};
+
+export type InputCrediantials = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Module = {
@@ -71,7 +58,13 @@ export type Module = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  SignUp?: Maybe<SignUpResponse>;
   incrementTrackViews: IncrementTrackViewsResponse;
+};
+
+
+export type MutationSignUpArgs = {
+  Crediantials?: InputMaybe<InputCrediantials>;
 };
 
 
@@ -81,12 +74,18 @@ export type MutationIncrementTrackViewsArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getUser?: Maybe<User>;
+  getUser?: Maybe<UserResponse>;
 };
 
 
 export type QueryGetUserArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type SignUpResponse = {
+  __typename?: 'SignUpResponse';
+  jwt?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserResponse>;
 };
 
 /** A track is a group of Modules that teaches about a specific topic */
@@ -110,20 +109,24 @@ export type Track = {
   title: Scalars['String']['output'];
 };
 
-export type User = {
-  __typename?: 'User';
-  blocked: Scalars['Boolean']['output'];
-  confirmed: Scalars['Boolean']['output'];
+export type UserAttributes = {
+  __typename?: 'UserAttributes';
+  aadhar_no: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
-  department?: Maybe<Scalars['String']['output']>;
-  email: Scalars['String']['output'];
-  employees: Array<Employee>;
-  firstName?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  lastName?: Maybe<Scalars['String']['output']>;
-  provider: Scalars['String']['output'];
+  date_of_joining: Scalars['String']['output'];
+  department: Scalars['String']['output'];
+  employee_id?: Maybe<Scalars['String']['output']>;
+  phone_no: Scalars['String']['output'];
+  publishedAt: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
-  username: Scalars['String']['output'];
+};
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  attributes?: Maybe<UserAttributes>;
+  email?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -199,59 +202,42 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Author: ResolverTypeWrapper<AuthorModel>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  Employee: ResolverTypeWrapper<Employee>;
-  EmployeeAttributes: ResolverTypeWrapper<EmployeeAttributes>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   IncrementTrackViewsResponse: ResolverTypeWrapper<Omit<IncrementTrackViewsResponse, 'track'> & { track?: Maybe<ResolversTypes['Track']> }>;
+  InputCrediantials: InputCrediantials;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Module: ResolverTypeWrapper<Module>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  SignUpResponse: ResolverTypeWrapper<SignUpResponse>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Track: ResolverTypeWrapper<TrackModel>;
-  User: ResolverTypeWrapper<User>;
+  UserAttributes: ResolverTypeWrapper<UserAttributes>;
+  UserResponse: ResolverTypeWrapper<UserResponse>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Author: AuthorModel;
   Boolean: Scalars['Boolean']['output'];
-  Employee: Employee;
-  EmployeeAttributes: EmployeeAttributes;
   ID: Scalars['ID']['output'];
   IncrementTrackViewsResponse: Omit<IncrementTrackViewsResponse, 'track'> & { track?: Maybe<ResolversParentTypes['Track']> };
+  InputCrediantials: InputCrediantials;
   Int: Scalars['Int']['output'];
   Module: Module;
   Mutation: {};
   Query: {};
+  SignUpResponse: SignUpResponse;
   String: Scalars['String']['output'];
   Track: TrackModel;
-  User: User;
+  UserAttributes: UserAttributes;
+  UserResponse: UserResponse;
 };
 
 export type AuthorResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Author'] = ResolversParentTypes['Author']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type EmployeeResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Employee'] = ResolversParentTypes['Employee']> = {
-  attributes?: Resolver<ResolversTypes['EmployeeAttributes'], ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type EmployeeAttributesResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['EmployeeAttributes'] = ResolversParentTypes['EmployeeAttributes']> = {
-  aadharNo?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  dateOfJoining?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  department?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  employeeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  phoneNo?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  publishedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -271,11 +257,18 @@ export type ModuleResolvers<ContextType = DataSourceContext, ParentType extends 
 };
 
 export type MutationResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  SignUp?: Resolver<Maybe<ResolversTypes['SignUpResponse']>, ParentType, ContextType, Partial<MutationSignUpArgs>>;
   incrementTrackViews?: Resolver<ResolversTypes['IncrementTrackViewsResponse'], ParentType, ContextType, RequireFields<MutationIncrementTrackViewsArgs, 'id'>>;
 };
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>;
+  getUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>;
+};
+
+export type SignUpResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['SignUpResponse'] = ResolversParentTypes['SignUpResponse']> = {
+  jwt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TrackResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Track'] = ResolversParentTypes['Track']> = {
@@ -291,31 +284,35 @@ export type TrackResolvers<ContextType = DataSourceContext, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UserResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  blocked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  confirmed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+export type UserAttributesResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['UserAttributes'] = ResolversParentTypes['UserAttributes']> = {
+  aadhar_no?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  department?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  employees?: Resolver<Array<ResolversTypes['Employee']>, ParentType, ContextType>;
-  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  provider?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  date_of_joining?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  department?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  employee_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  phone_no?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  publishedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['UserResponse'] = ResolversParentTypes['UserResponse']> = {
+  attributes?: Resolver<Maybe<ResolversTypes['UserAttributes']>, ParentType, ContextType>;
+  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = DataSourceContext> = {
   Author?: AuthorResolvers<ContextType>;
-  Employee?: EmployeeResolvers<ContextType>;
-  EmployeeAttributes?: EmployeeAttributesResolvers<ContextType>;
   IncrementTrackViewsResponse?: IncrementTrackViewsResponseResolvers<ContextType>;
   Module?: ModuleResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  SignUpResponse?: SignUpResponseResolvers<ContextType>;
   Track?: TrackResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
+  UserAttributes?: UserAttributesResolvers<ContextType>;
+  UserResponse?: UserResponseResolvers<ContextType>;
 };
 
