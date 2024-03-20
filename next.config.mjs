@@ -7,3 +7,5 @@ const nextConfig = {
 }
 
 export default nextConfig
+
+//added new changes
